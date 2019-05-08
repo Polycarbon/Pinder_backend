@@ -9,12 +9,12 @@ module.exports = (app) => {
     app.get('/user/generate', users.generate);
 
     // Update a Note with noteId
-    app.put('/user/update', users.update);
+    app.put('/user/update', users.updateProfile);
 
-    // Delete a Note with noteId
-    app.delete('/user/:userId', users.delete);
+    //Update favorite list
+    app.post('/user/like', users.like);
 
     app.route('/user/:userId')
-        .delete(users.delete)
-        .get(users.get);
+        .delete(users.deleteById)
+        .get(users.findById);
 }

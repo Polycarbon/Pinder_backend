@@ -45,6 +45,29 @@ const UserSchema = mongoose.Schema({
         large: String,
         medium: String,
         thumbnail: String
+    },
+    favorite:[{type: mongoose.Schema.ObjectId, ref: 'pet'}],
+    filter_setting:{
+        type: {
+            cat: true,
+            dog: true,
+            exotic :true
+        },
+        age: {
+            baby:true,
+            adult:true,
+            senior:true
+        },
+        gender: {
+            male:true,
+            female:true
+        },
+        size: {
+            small:true,
+            medium:true,
+            large:true,
+            extra_large:true
+        }
     }
 }, {
     timestamps: true

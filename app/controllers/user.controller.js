@@ -8,12 +8,10 @@ exports.create = (req, res) => {
             message: "User content can not be empty"
         });
     }
-
     // Create a User
     const user = new User({
         first_name: req.body.first_name,
         last_name: req.body.last_name,
-        middle_name : req.body.middle_name,
         gender : req.body.gender,
         email : req.body.email,
         mobile : req.body.mobile
@@ -48,12 +46,33 @@ exports.generate = (req, res) =>{
                     phoneNumber : data[i].cell,
                     postCode : data[i].location.postcode,
                     picture : data[i].picture,
-                    pet: null
+                    filter_setting : {
+                        type: {
+                            cat: true,
+                            dog: true,
+                            exotic :true
+                        },
+                        age: {
+                            baby:true,
+                            adult:true,
+                            senior:true
+                        },
+                        gender: {
+                            male:true,
+                            female:true
+                        },
+                        size: {
+                            small:true,
+                            medium:true,
+                            large:true,
+                            extra_large:true
+                        }
+                    }
                 });
                 // Save User in the database
                 user.save()
                     .then(data => {
-                        res.send(data);
+                        // res.send(data);
                     }).catch(err => {
                     res.status(500).send({
                         message: err.message || "Some error occurred while creating the User."
@@ -75,29 +94,8 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Update a note identified by the noteId in the request
-exports.update = (req, res) => {
-    // Validate Request
-    // if(!req.body.criteria) {
-    //     return res.status(400).send({
-    //         message: "User content can not be empty"
-    //     });
-    // }
-
-    // Find user and update it with the request body
-    var conditions = req.body.criteria
-        , update = req.body.data
-        , options = req.body.opts;
-
-    User.update(conditions, update, options, (err,numAffected)=>{
-        res.send({
-            message : numAffected+" is the number of updated documents"
-        })
-    });
-};
-
 // Delete a note with the specified noteId in the request
-exports.delete = (req, res) => {
+exports.deleteById = (req, res) => {
     User.findOneAndDelete(req.params.userId)
         .then(note => {
             if(!note) {
@@ -118,7 +116,7 @@ exports.delete = (req, res) => {
     });
 };
 
-exports.get = (req, res) => {
+exports.findById = (req, res) => {
     User.findById(req.params.userId)
         .then(user => {
             if(!user) {
@@ -136,5 +134,36 @@ exports.get = (req, res) => {
         return res.status(500).send({
             message: "Could not get user with id " + req.params.userId
         });
+    });
+};
+
+exports.like = (req,res)=>{
+    let conditions = {_id:req.body.user_id}
+        , update = {$push: {favorite: req.body.pet_id}};
+    User.findOneAndUpdate(conditions, update,(error, success)=>{
+        if (error) {
+            res.send(error);
+        } else {
+            res.send(success);
+        }
+    });
+};
+
+exports.updateProfile = (req,res)=>{
+    // Validate Request
+    if(!req.body.criteria) {
+        return res.status(400).send({
+            message: "User content can not be empty"
+        });
+    }
+    let conditions = req.body.criteria
+        , update = req.body.data;
+
+    User.findOneAndUpdate(conditions, update,(error, success)=>{
+        if (error) {
+            res.send(error);
+        } else {
+            res.send(success);
+        }
     });
 };

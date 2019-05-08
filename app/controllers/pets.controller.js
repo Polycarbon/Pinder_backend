@@ -39,8 +39,8 @@ exports.create = (req, res) => {
 // Retrieve and return all notes from the database.
 exports.findAll = (req, res) => {
     Pet.find()
-        .then(notes => {
-            res.send(notes);
+        .then(pet => {
+            res.send(pet);
         }).catch(err => {
         res.status(500).send({
             message: err.message || "Some error occurred while retrieving notes."
@@ -57,6 +57,14 @@ exports.update = (req, res) => {
         res.send({
             message : numAffected+" is the number of updated documents"
         })
+    });
+};
+// Get List
+exports.findByList = (req, res) => {
+    Pet.find({
+        '_id': { $in: req.body.list}
+    }, function(err, pets){
+        res.send(pets);
     });
 };
 // Generate new Pet
@@ -78,9 +86,30 @@ exports.generate = (req, res) =>{
                     name: animals[i].name,
                     description: animals[i].description,
                     pictures: (animals[i].photos.length==1) ? animals[i].photos: null,
-                    contact: animals[i].contact,
                     status: animals[i].status,
-                    contact: animals[i].contact
+                    contact: animals[i].contact,
+                    filter_setting: {
+                        type: {
+                            cat: true,
+                            dog: true,
+                            exotic :true
+                        },
+                        age: {
+                            baby:true,
+                            adult:true,
+                            senior:true
+                        },
+                        gender: {
+                            male:true,
+                            female:true
+                        },
+                        size: {
+                            small:true,
+                            medium:true,
+                            large:true,
+                            extra_large:true
+                        }
+                    }
                 });
                 // Save User in the database
                 pet.save()
