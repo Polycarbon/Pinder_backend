@@ -33,7 +33,10 @@ const petSchema = mongoose.Schema({
         type: String,
         default: ''
     },
-    pictures:[],
+    pictures:{
+        type :Array,
+        default : null
+    },
     status: {
         type: String
     }

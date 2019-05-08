@@ -61,7 +61,7 @@ exports.update = (req, res) => {
 };
 // Generate new Pet
 exports.generate = (req, res) =>{
-    petFind.animal.search({limit:10})
+    petFind.animal.search({limit:100})
         .then(function (response) {
             // Do something with `response.data.animals`
             var animals = response.data.animals;
@@ -77,9 +77,10 @@ exports.generate = (req, res) =>{
                     size: animals[i].size,
                     name: animals[i].name,
                     description: animals[i].description,
-                    pictures: animals[i].photos,
+                    pictures: (animals[i].photos.length==1) ? animals[i].photos: null,
                     status: animals[i].status
-            };
+                };
+                console.log(pet.pictures)
                 // Save User in the database
                 var conditions = {pet : null}
                     , update = {$set: {pet: pet}}
