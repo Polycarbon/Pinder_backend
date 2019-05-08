@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 const petSchema = mongoose.Schema({
+    pet_id: {
+        type: Number,
+        required: true,
+        unique: true
+    },
     type: {
         type: String,
         required: true
@@ -39,6 +44,7 @@ const petSchema = mongoose.Schema({
     },
     status: {
         type: String
-    }
+    },
+    contact: {}
 });
-module.exports = petSchema
+module.exports = mongoose.model('pet', petSchema,'pets');

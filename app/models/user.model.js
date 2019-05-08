@@ -1,4 +1,3 @@
-const petSchema = require('../models/pets.model');
 const mongoose = require('mongoose');
 mongoose.set('useCreateIndex', true);
 
@@ -46,10 +45,6 @@ const UserSchema = mongoose.Schema({
         large: String,
         medium: String,
         thumbnail: String
-    },
-    pet: {
-        type: petSchema,
-        default : null
     }
 }, {
     timestamps: true

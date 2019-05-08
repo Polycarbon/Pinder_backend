@@ -27,7 +27,7 @@ exports.create = (req, res) => {
         pic_url : req.body.pic_url
     });
     // Save Pet in the database
-    Pet.save()
+    pet.save()
         .then(data => {
             res.send(data);
         }).catch(err => {
@@ -67,7 +67,7 @@ exports.generate = (req, res) =>{
             var animals = response.data.animals;
             for (let i=0; i < animals.length; i++) {
                 // Create a User
-                const pet = {
+                const pet = new Pet({
                     pet_id: animals[i].id,
                     type: animals[i].type,
                     species: animals[i].species,
@@ -78,20 +78,20 @@ exports.generate = (req, res) =>{
                     name: animals[i].name,
                     description: animals[i].description,
                     pictures: (animals[i].photos.length==1) ? animals[i].photos: null,
-                    status: animals[i].status
-                };
-                console.log(pet.pictures)
+                    contact: animals[i].contact,
+                    status: animals[i].status,
+                    contact: animals[i].contact
+                });
                 // Save User in the database
-                var conditions = {pet : null}
-                    , update = {$set: {pet: pet}}
-                    , options = {muti : false};
-                User.update(conditions, update, options, (err,numAffected)=>{
-                    console.log(numAffected)
+                pet.save()
+                    .then(data => {
+                        res.send(data);
+                    }).catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred while creating the Pet."
+                    });
                 });
             }
-            res.send({
-                message : "success"
-            })
         })
         .catch(function (error) {
             // Handle the error
