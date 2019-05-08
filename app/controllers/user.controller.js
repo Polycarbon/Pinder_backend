@@ -3,9 +3,9 @@ const axios = require('axios');
 // Create and Save a new User
 exports.create = (req, res) => {
     // Validate request
-    if(!req.body.content) {
+    if(!req.body.username && !req.body.password) {
         return res.status(400).send({
-            message: "User content can not be empty"
+            message: "please fill user and password"
         });
     }
     // Create a User
