@@ -1,5 +1,5 @@
 const User = require('../models/user.model');
-const faker = require('faker');
+const axios = require('axios');
 // Create and Save a new User
 exports.create = (req, res) => {
     // Validate request
@@ -32,31 +32,35 @@ exports.create = (req, res) => {
 
 // Generate new User
 exports.generate = (req, res) =>{
-    let n = 30
-    for (let i=1; i <= n; i++) {
-        // Create a User
-        const user = new User({
-            first_name: faker.name.firstName(),
-            last_name: faker.name.lastName(),
-            middle_name : "",
-            gender : faker.name.prefix(),
-            email : faker.internet.email(),
-            mobile : "035424244"
+    let n = 100
+    axios.get('https://randomuser.me/api/?inc=gender,name,login,email,picture,cell,location&nat=us&results='+n)
+        .then(response => {
+            let data = response["data"]["results"]
+            console.log(data)
+            for (let i=0; i < data.length; i++) {
+                // Create a User
+                const user = new User({
+                    username : data[i].login.username,
+                    password :data[i].login.password,
+                    firstName: data[i].name.first,
+                    lastName: data[i].name.last,
+                    email : data[i].email,
+                    phoneNumber : data[i].cell,
+                    postCode : data[i].location.postcode,
+                    picture : data[i].picture,
+                    pet: null
+                });
+                // Save User in the database
+                user.save()
+                    .then(data => {
+                        res.send(data);
+                    }).catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred while creating the User."
+                    });
+                });
+            }
         });
-        // Save User in the database
-        user.save()
-            .then(data => {
-                // res.send(data);
-            }).catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while creating the User."
-            });
-        });
-    }
-    res.send({
-        message: "Success"
-    });
-
 }
 
 // Retrieve and return all notes from the database.
