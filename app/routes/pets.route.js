@@ -5,6 +5,9 @@ module.exports = (app) => {
         .get(pets.findAll)
         .post(pets.findByList);
 
+    //find pet by Id
+    app.route('/pets/:petId')
+        .get(pets.findById)
     // Create a new Note
     app.get('/pets/generate', pets.generate);
 

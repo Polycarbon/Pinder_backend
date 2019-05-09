@@ -67,6 +67,26 @@ exports.findByList = (req, res) => {
         res.send(pets);
     });
 };
+exports.findById = (req,res) => {
+    Pet.findById(req.params.petId)
+        .then(user => {
+            if(!user) {
+                return res.status(404).send({
+                    message: "User not found with id " + req.params.userId
+                });
+            }
+            res.send(user);
+        }).catch(err => {
+        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+            return res.status(404).send({
+                message: "User not found with id " + req.params.userId
+            });
+        }
+        return res.status(500).send({
+            message: "Could not get user with id " + req.params.userId
+        });
+    });
+}
 // Generate new Pet
 exports.generate = (req, res) =>{
     petFind.animal.search({limit:100})

@@ -8,8 +8,8 @@ module.exports = (app) => {
     // Create a new Note
     app.get('/user/generate', users.generate);
 
-    // Update a Note with noteId
-    app.put('/user/update', users.updateProfile);
+    // Update a user Profile
+    app.post('/user/update', users.updateProfile);
 
     //Update favorite list
     app.post('/user/like', users.like);

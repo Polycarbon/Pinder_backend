@@ -17,27 +17,28 @@ const UserSchema = mongoose.Schema({
         required: true
     },
     firstName: {
-        type: String
+        type: String,
+        default:null
     },
     lastName: {
-        type: String
+        type: String,
+        default: null
     },
     email: {
         type: String,
         trim: true,
         lowercase: true,
         unique: true,
-        required: 'Email address is required',
         validate: [validateEmail, 'Please fill a valid email address'],
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
     postCode: {
         type: String,
-        default: ''
+        default: null
     },
     phoneNumber: {
         type: String,
-        default: ''
+        default: null
     },
     picture: {
         large: String,
