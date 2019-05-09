@@ -1,5 +1,6 @@
 const User = require('../models/user.model');
 const axios = require('axios');
+const bcrypt = require('bcrypt');
 // Create and Save a new User
 exports.create = (req, res) => {
     // Validate request
@@ -27,16 +28,15 @@ exports.create = (req, res) => {
 
 // Generate new User
 exports.generate = (req, res) =>{
-    let n = 100
+    let n = 10;
     axios.get('https://randomuser.me/api/?inc=gender,name,login,email,picture,cell,location&nat=us&results='+n)
         .then(response => {
             let data = response["data"]["results"]
-            console.log(data)
             for (let i=0; i < data.length; i++) {
                 // Create a User
                 const user = new User({
                     username : data[i].login.username,
-                    password :data[i].login.password,
+                    password : bcrypt.hashSync(data[i].login.password, 8),
                     firstName: data[i].name.first,
                     lastName: data[i].name.last,
                     email : data[i].email,
@@ -76,6 +76,9 @@ exports.generate = (req, res) =>{
                     });
                 });
             }
+            res.send({
+                message: "success"
+            });
         });
 }
 

@@ -1,7 +1,9 @@
 var express = require("express");
 var bodyParser = require("body-parser");
+var cors = require("cors");
 var app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // Configuring the database
@@ -21,7 +23,8 @@ mongoose.connect(dbConfig.url, {
 
 // Require Notes routes
 require('./app/routes/user.route.js')(app);
-require('./app/routes/pets.route.js')(app)
+require('./app/routes/pets.route.js')(app);
+require('./app/routes/auth.route.js')(app);
 // listen for requests
 app.listen(3000, () => {
     console.log("Server is listening on port 3000");
