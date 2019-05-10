@@ -89,7 +89,8 @@ exports.findById = (req,res) => {
 }
 // Generate new Pet
 exports.generate = (req, res) =>{
-    petFind.animal.search({limit:100})
+    if(req.params.n>100) req.params.n=100
+    petFind.animal.search({limit:req.params.n})
         .then(function (response) {
             // Do something with `response.data.animals`
             var animals = response.data.animals;
@@ -105,7 +106,7 @@ exports.generate = (req, res) =>{
                     size: animals[i].size,
                     name: animals[i].name,
                     description: animals[i].description,
-                    pictures: (animals[i].photos.length==1) ? animals[i].photos: null,
+                    pictures: (animals[i].photos.length>1) ? animals[i].photos: null,
                     status: animals[i].status,
                     contact: animals[i].contact,
                     filter_setting: {
@@ -132,14 +133,18 @@ exports.generate = (req, res) =>{
                     }
                 });
                 // Save User in the database
-                pet.save()
-                    .then(data => {
-                        res.send(data);
-                    }).catch(err => {
-                    res.status(500).send({
-                        message: err.message || "Some error occurred while creating the Pet."
+                if((animals[i].photos.length>1)){
+                    console.log(animals[i].name)
+                    pet.save()
+                        .then(data => {
+                            res.send(data);
+                        }).catch(err => {
+                        res.status(500).send({
+                            message: err.message || "Some error occurred while creating the Pet."
+                        });
                     });
-                });
+                }
+
             }
         })
         .catch(function (error) {

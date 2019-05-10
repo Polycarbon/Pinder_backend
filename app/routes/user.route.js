@@ -3,7 +3,6 @@ const users = require('../controllers/user.controller');
 module.exports = (app) => {
     app.route('/user')
         .get(users.findAll)
-        .post(users.create);
 
     // Create a new Note
     app.get('/user/generate', users.generate);
@@ -11,8 +10,11 @@ module.exports = (app) => {
     // Update a user Profile
     app.post('/user/update', users.updateProfile);
 
-    //Update favorite list
+    //Update like list
     app.post('/user/like', users.like);
+
+    //Update dislike list
+    app.post('/user/dislike', users.dislike);
 
     app.route('/user/:userId')
         .delete(users.deleteById)

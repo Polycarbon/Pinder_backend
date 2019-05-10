@@ -13,6 +13,11 @@ exports.register = (req, res) => {
     }
     // Create a User
     req.body.password = bcrypt.hashSync(req.body.password, 8);
+    req.body.picture = {
+        large: "https://img.icons8.com/ios/128/000000/cat-profile-filled.png",
+        medium: "https://img.icons8.com/ios/72/000000/cat-profile-filled.png",
+        thumbnail: "https://img.icons8.com/ios/50/000000/cat-profile-filled.png"
+    };
     const user = new User(req.body);
     // Save User in the database
     user.save()
@@ -46,12 +51,28 @@ exports.login = (req, res) => {
             }
             let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
             if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
-            let token = jwt.sign({ id: user.username }, secret, { expiresIn: 86400 });
+            let token = jwt.sign({user}, secret, { expiresIn: 86400 });
             res.send({auth: true, token: token ,user:user});
         }).catch(err => {
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-            return res.status(500).send('error');
+            return res.status(500).send('error1');
         }
-        return res.status(500).send('error');
+        console.log(err)
+        return res.status(500).send(err);
     });
 };
+
+exports.verify = (req, res) => {
+    if (req.body.token) {
+        try {
+            var decoded = jwt.decode(req.body.token, secret);
+            decoded.token = req.body.token
+            res.send(decoded)
+        } catch (err) {
+            return res.status(500).send('error');
+        }
+    } else {
+        return res.status(500).send('error');
+    }
+};
+

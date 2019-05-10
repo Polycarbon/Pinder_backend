@@ -9,6 +9,6 @@ module.exports = (app) => {
     app.route('/pets/:petId')
         .get(pets.findById)
     // Create a new Note
-    app.get('/pets/generate', pets.generate);
+    app.get('/pets/generate/:n', pets.generate);
 
 };

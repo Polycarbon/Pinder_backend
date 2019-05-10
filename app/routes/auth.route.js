@@ -7,4 +7,6 @@ module.exports = (app) => {
     //Register
     app.post('/register', auth.register);
 
+    //verify token
+    app.post('/verify', auth.verify);
 };

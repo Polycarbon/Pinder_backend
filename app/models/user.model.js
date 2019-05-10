@@ -45,7 +45,8 @@ const UserSchema = mongoose.Schema({
         medium: String,
         thumbnail: String
     },
-    favorite:[{type: mongoose.Schema.ObjectId, ref: 'pet'}],
+    like:[{type: mongoose.Schema.ObjectId, ref: 'pet',unique: true}],
+    dislike:[{type: mongoose.Schema.ObjectId, ref: 'pet',unique: true}],
     filter_setting:{
         type: {
             cat: true,

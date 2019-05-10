@@ -1,30 +1,6 @@
 const User = require('../models/user.model');
 const axios = require('axios');
 const bcrypt = require('bcrypt');
-// Create and Save a new User
-exports.create = (req, res) => {
-    // Validate request
-    if(!req.body.username && !req.body.password) {
-        return res.status(400).send({
-            message: "please fill user and password"
-        });
-    }
-    // Create a User
-    const user = new User({
-        username: req.body.username,
-        password: req.body.password
-    });
-
-    // Save User in the database
-    user.save()
-        .then(data => {
-            res.send(data);
-        }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while creating the User."
-        });
-    });
-};
 
 // Generate new User
 exports.generate = (req, res) =>{
@@ -136,24 +112,48 @@ exports.findById = (req, res) => {
         });
     });
 };
-
+//append pet_id to like list
 exports.like = (req,res)=>{
     let conditions = {_id:req.body.user_id}
-        , update = {$push: {favorite: req.body.pet_id}};
-    User.findOneAndUpdate(conditions, update,(error, success)=>{
+        , update = {$push: {like: req.body.pet_id}};
+    User.findOneAndUpdate(conditions, update,(error, user)=>{
         if (error) {
-            res.send(error);
+            res.status(500).send({
+                success:false,
+                message:error
+            });
         } else {
-            res.send(success);
+            res.send({
+                success:true,
+                message:user
+            });
         }
     });
 };
 
+//append pet_id to dislike list
+exports.dislike = (req,res)=>{
+    let conditions = {_id:req.body.user_id}
+        , update = {$push: {dislike: req.body.pet_id}};
+    User.findOneAndUpdate(conditions, update,(error, user)=>{
+        if (error) {
+            res.status(500).send({
+                success:false,
+                message:error
+            });
+        } else {
+            res.send({
+                success:true,
+                message:user
+            });
+        }
+    });
+};
 exports.updateProfile = (req,res)=>{
     // Validate Request
     if(!req.body.criteria) {
         return res.status(400).send({
-            message: "User content can not be empty"
+            message: "User content can not be empty."
         });
     }
     let conditions = req.body.criteria
